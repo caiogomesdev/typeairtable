@@ -1,0 +1,19 @@
+{
+  "name": "airtableql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "tsc --watch"
+  },
+  "author": "Caio Gomes",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "jest": "^28.1.3"
+  }
+}
