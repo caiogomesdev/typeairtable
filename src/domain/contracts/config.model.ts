@@ -1,4 +1,4 @@
-export interface Config {
+export interface ConfigModel {
   apiKey: string;
   baseUrl: string;
 }
