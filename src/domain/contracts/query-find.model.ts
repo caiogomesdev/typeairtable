@@ -1,21 +1,21 @@
-interface BaseQueryFind<T> {
-  where?: Where<T> | Array<Where<T>>;
+interface BaseQueryFind<T extends string = any> {
+  where?: Where<T>;
   select?: Array<T>;
-  orderBy?: OrderBy<T>;
+  orderBy?: Partial<Record<T, 'asc' | 'desc'>>;
 }
 
-export type Where<T> = {
-  [P in keyof T]?: any;
-};
+export type Where<T extends string> =
+  | Partial<Record<T, any>>
+  | Partial<Record<T, any>>[];
 
-type OrderBy<T> = {
-  [P in keyof T]?: 'asc' | 'desc';
-};
+export interface QueryFind<T extends string = any> extends BaseQueryFind<T> {}
 
-export interface QueryFind<T = any> extends BaseQueryFind<T> {}
-
-export interface QueryFindAll<T = any> extends BaseQueryFind<T> {
+export interface QueryFindAll<T extends string> extends BaseQueryFind<T> {
   take?: number;
 }
 
-export type DefaultQueryFind<T = any> = QueryFind<T> & QueryFindAll<T>;
+export interface DefaultQueryFind
+  extends Partial<BaseQueryFind>,
+    Partial<BaseQueryFind> {
+  take?: any;
+}

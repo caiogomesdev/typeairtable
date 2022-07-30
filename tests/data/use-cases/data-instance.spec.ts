@@ -1,19 +1,7 @@
-import { Repository } from '../../../src/data/services/repository';
-import {
-  TableModel,
-  DataInstanceModel,
-  RepositoryModel,
-  Field,
-} from '../../../src/domain/contracts';
+import { DataInstance } from '@/data/services/data-instance';
+import { Repository } from '@/data/services/repository';
+import { Field } from '@/domain/contracts';
 import { makeSutRepository } from '../mocks';
-export class DataInstance implements DataInstanceModel {
-  constructor(private readonly repositoryModel: RepositoryModel) {}
-
-  getRepository<T extends TableModel>(table: T) {
-    type Column = keyof T['columns'][number];
-    return this.repositoryModel as RepositoryModel<Column>;
-  }
-}
 
 const makeSut = () => {
   const repository = makeSutRepository().sut;

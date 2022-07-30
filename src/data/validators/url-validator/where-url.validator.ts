@@ -4,7 +4,7 @@ import {
   Where,
 } from '../../../domain/contracts';
 
-type AllWhere = Where<any> | Where<any>[];
+type AllWhere = Where<string> | Where<string>[];
 
 export class WhereUrlValidator implements UrlValidator {
   validate(url: string, dataInstance: DefaultQueryFind): string {
@@ -23,7 +23,7 @@ export class WhereUrlValidator implements UrlValidator {
     return this.generateAND(where);
   }
 
-  private generateAND(where: Where<any>): string {
+  private generateAND(where: Where<string>): string {
     const whereArray = Object.keys(where).map((item) => {
       const value = where[item];
       return `{${item}}='${value}'`;
