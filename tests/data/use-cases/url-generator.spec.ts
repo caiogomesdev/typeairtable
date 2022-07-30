@@ -1,11 +1,7 @@
-import { ConfigModel, DefaultQueryFind, Field, TableModel } from '../../../src/domain/contracts';
+import { ConfigModel, DefaultQueryFind, Field, TableModel, UrlValidator } from '../../../src/domain/contracts';
 
 interface GetUrlGenerator {
   getUrl(dataInstance: DefaultQueryFind): string;
-}
-
-interface UrlValidator {
-  validate(url: string, dataInstance: DefaultQueryFind): string;
 }
 
 class SelectUrlValidator implements UrlValidator {
