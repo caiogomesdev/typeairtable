@@ -12,11 +12,12 @@ class UrlGenerator implements GetUrlGenerator {
     private readonly table: TableModel,
     private readonly dataInstance: QueryFind & QueryFindAll)
   {
-    this.url = `${config.baseUrl}/${table.tableName}?api_key=${config.apiKey}`
+    this.url = `${config.baseUrl}/${table.tableName}?api_key=${config.apiKey}`;
   }
 
   getUrl(): string {
     this.checkSelect();
+    this.checkWhere();
     this.checkOrderBy();
     return this.url;
   }
@@ -35,6 +36,23 @@ class UrlGenerator implements GetUrlGenerator {
       const value = (this.dataInstance.orderBy as any)[item];
       this.url = `${this.url}&sort[${index}][field]=${item}&sort[${index}][direction]=${value}`;
     })
+  }
+
+  checkWhere() {
+    if (!this.dataInstance.where || !Object.keys(this.dataInstance.where).length) {
+      return;
+    }
+    this.url = `${this.url}&filterByFormula=`;
+    const where = this.dataInstance.where;
+    const isArray = Array.isArray(where);
+    if (isArray) {
+      return;
+    }
+    const whereArrat = Object.keys(where).map(item => {
+      const value = where[item];
+      return `{${item}}='${value}'`;
+    })
+    this.url = `${this.url}AND(${whereArrat.join(',')})`;
   }
 }
 
@@ -67,6 +85,12 @@ describe('UrlGenerator', () => {
   it('Should return url correct if exists orderBy', () => {
     const { sut, initialUrl } = makeSut({ orderBy: { name: 'asc', email: 'desc'} });
     const url = `${initialUrl}&sort[0][field]=name&sort[0][direction]=asc&sort[1][field]=email&sort[1][direction]=desc`;
+    expect(sut.getUrl()).toBe(url);
+  })
+
+  it('Should return url correct if exists where with AND operator', () => {
+    const { sut, initialUrl } = makeSut({ where: { name: 'any_name', email: 'any_email'}});
+    const url = `${initialUrl}&filterByFormula=AND({name}='any_name',{email}='any_email')`;
     expect(sut.getUrl()).toBe(url);
   })
 })
