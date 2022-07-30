@@ -1,16 +1,15 @@
-export interface DefaultQueryFind<T, K = keyof T & string> {
+export interface DefaultQueryFind<T = any, K = keyof T & string> {
   where?: Where<T> | Array<Where<T>>;
   select?: Array<K>;
-  orderBy?: OrderBy;
+  orderBy?: OrderBy<T>;
 }
 
 type Where<T> = {
   [P in keyof T]?: any
 }
 
-interface OrderBy {
-  field: string;
-  order: 'asc' | 'desc';
+type OrderBy<T> = {
+  [P in keyof T]?: 'asc' | 'desc';
 }
 
 export interface QueryFind<T = any> extends DefaultQueryFind<T> {}

@@ -16,13 +16,24 @@ class UrlGenerator implements GetUrlGenerator {
   }
 
   getUrl(): string {
-    this.getSelect();
+    this.checkSelect();
+    this.checkOrderBy();
     return this.url;
   }
 
-  getSelect() {
+  checkSelect() {
     this.dataInstance.select?.forEach(item => {
       this.url = `${this.url}&fields[]=${item}`;
+    })
+  }
+
+  checkOrderBy() {
+    if (!this.dataInstance.orderBy) {
+      return;
+    }
+    Object.keys(this.dataInstance.orderBy).forEach((item, index) => {
+      const value = (this.dataInstance.orderBy as any)[item];
+      this.url = `${this.url}&sort[${index}][field]=${item}&sort[${index}][direction]=${value}`;
     })
   }
 }
@@ -38,7 +49,6 @@ const makeSut = (dataInstance: QueryFind & QueryFindAll) => {
   }
   const sut = new UrlGenerator(config, table, dataInstance);
   const initialUrl = `${config.baseUrl}/${table.tableName}?api_key=${config.apiKey}`;
-
   return { sut, initialUrl };
 }
 
@@ -51,6 +61,12 @@ describe('UrlGenerator', () => {
   it('Should return url correct if exists select', () => {
     const { sut, initialUrl } = makeSut({ select: ['name', 'email'] });
     const url = `${initialUrl}&fields[]=name&fields[]=email`;
+    expect(sut.getUrl()).toBe(url);
+  })
+
+  it('Should return url correct if exists orderBy', () => {
+    const { sut, initialUrl } = makeSut({ orderBy: { name: 'asc', email: 'desc'} });
+    const url = `${initialUrl}&sort[0][field]=name&sort[0][direction]=asc&sort[1][field]=email&sort[1][direction]=desc`;
     expect(sut.getUrl()).toBe(url);
   })
 })
