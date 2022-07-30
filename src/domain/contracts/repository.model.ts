@@ -1,5 +1,5 @@
 import { QueryFind } from './query-find.model';
 
-export interface RepositoryModel<T = any> {
-  find(params: QueryFind<T>): Promise<T>;
+export interface RepositoryModel {
+  find<T = any>(params: QueryFind<T>): Promise<T>;
 }
