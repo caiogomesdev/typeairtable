@@ -1,5 +1,5 @@
 import { RepositoryModel, TableModel } from '.';
 
 export interface DataInstanceModel {
-  getRepository(table: TableModel): RepositoryModel;
+  getRepository<T extends TableModel>(table: T): RepositoryModel;
 }

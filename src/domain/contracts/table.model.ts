@@ -1,12 +1,13 @@
 export interface TableModel {
   tableName: string;
-  columns: ColumnsModel[]
+  columns: ColumnsModel[];
 }
 
-export interface ColumnsModel {
-  name: string;
-  type: Field;
-}
+export type ColumnsModel = {
+  [P in keyof object]: {
+    type: Field;
+  };
+};
 
 export enum Field {
   IMAGE = 'Image',

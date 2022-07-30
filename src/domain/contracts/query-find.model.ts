@@ -1,6 +1,6 @@
-interface BaseQueryFind<T = any, K = keyof T & string> {
+interface BaseQueryFind<T> {
   where?: Where<T> | Array<Where<T>>;
-  select?: Array<K>;
+  select?: Array<T>;
   orderBy?: OrderBy<T>;
 }
 
