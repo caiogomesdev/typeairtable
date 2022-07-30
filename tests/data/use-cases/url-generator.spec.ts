@@ -4,7 +4,6 @@ import {
   DefaultQueryFind,
   Field,
   TableModel,
-  UrlValidator,
 } from '../../../src/domain/contracts';
 
 const makeSut = (dataInstance: DefaultQueryFind) => {
