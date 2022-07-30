@@ -45,11 +45,19 @@ describe('UrlGenerator', () => {
     expect(sut.getUrl()).toBe(url);
   });
 
-  it('Should return url correct if exists where with AND operator', () => {
+  it('Should return url correct if exists where = AND operator', () => {
     const { sut, initialUrl } = makeSut({
       where: { name: 'any_name', email: 'any_email' },
     });
     const url = `${initialUrl}&filterByFormula=AND({name}='any_name',{email}='any_email')`;
+    expect(sut.getUrl()).toBe(url);
+  });
+
+  it('Should return url correct if exists where = OR operator', () => {
+    const { sut, initialUrl } = makeSut({
+      where: [{ name: 'any_name', email: 'any_email' }, { name: 'any_name2' }],
+    });
+    const url = `${initialUrl}&filterByFormula=OR(AND({name}='any_name',{email}='any_email'),AND({name}='any_name2'))`;
     expect(sut.getUrl()).toBe(url);
   });
 });

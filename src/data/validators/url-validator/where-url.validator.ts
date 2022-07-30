@@ -1,4 +1,10 @@
-import { DefaultQueryFind, UrlValidator } from '../../../domain/contracts';
+import {
+  DefaultQueryFind,
+  UrlValidator,
+  Where,
+} from '../../../domain/contracts';
+
+type AllWhere = Where<any> | Where<any>[];
 
 export class WhereUrlValidator implements UrlValidator {
   validate(url: string, dataInstance: DefaultQueryFind): string {
@@ -6,16 +12,29 @@ export class WhereUrlValidator implements UrlValidator {
       return url;
     }
     url = `${url}&filterByFormula=`;
-    const where = dataInstance.where;
+    return url + this.generateUrl(dataInstance.where);
+  }
+
+  private generateUrl(where: AllWhere): string {
     const isArray = Array.isArray(where);
     if (isArray) {
-      return url;
+      return this.generateOR(where);
     }
-    const whereArrat = Object.keys(where).map(item => {
+    return this.generateAND(where);
+  }
+
+  private generateAND(where: Where<any>): string {
+    const whereArray = Object.keys(where).map((item) => {
       const value = where[item];
       return `{${item}}='${value}'`;
-    })
-    url = `${url}AND(${whereArrat.join(',')})`;
-    return url;
+    });
+    return `AND(${whereArray.join(',')})`;
+  }
+
+  private generateOR(where: Where<any>[]): string {
+    const orArray = where.reduce((acc, item) => {
+      return `${acc},${this.generateAND(item as any)}`;
+    }, '');
+    return `OR(${orArray.substring(1)})`;
   }
 }

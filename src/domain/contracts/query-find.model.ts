@@ -4,7 +4,7 @@ interface BaseQueryFind<T = any, K = keyof T & string> {
   orderBy?: OrderBy<T>;
 }
 
-type Where<T> = {
+export type Where<T> = {
   [P in keyof T]?: any;
 };
 
