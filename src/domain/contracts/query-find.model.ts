@@ -1,8 +1,7 @@
-export interface DefaultQueryFind<T, K = keyof T> {
+export interface DefaultQueryFind<T, K = keyof T & string> {
   where?: Where<T> | Array<Where<T>>;
   select?: Array<K>;
   orderBy?: OrderBy;
-  find: T;
 }
 
 type Where<T> = {
@@ -14,8 +13,8 @@ interface OrderBy {
   order: 'asc' | 'desc';
 }
 
-export interface QueryFind<T> extends DefaultQueryFind<T> {}
+export interface QueryFind<T = any> extends DefaultQueryFind<T> {}
 
-export interface QueryFindAll<T> extends DefaultQueryFind<T> {
+export interface QueryFindAll<T = any> extends DefaultQueryFind<T> {
   take?: number;
 }
