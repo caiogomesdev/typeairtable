@@ -1,7 +1,60 @@
-import { ConfigModel, Field, QueryFind, QueryFindAll, TableModel } from '../../../src/domain/contracts';
+import { ConfigModel, DefaultQueryFind, Field, TableModel } from '../../../src/domain/contracts';
 
 interface GetUrlGenerator {
-  getUrl(dataInstance: QueryFind & QueryFindAll): string;
+  getUrl(dataInstance: DefaultQueryFind): string;
+}
+
+interface UrlValidator {
+  validate(url: string, dataInstance: DefaultQueryFind): string;
+}
+
+class SelectUrlValidator implements UrlValidator {
+  validate(url: string, dataInstance: DefaultQueryFind): string {
+    dataInstance.select?.forEach(item => {
+      url = `${url}&fields[]=${item}`;
+    })
+    return url;
+  }
+}
+
+class OrderByUrlValidator implements UrlValidator {
+  validate(url: string, dataInstance: DefaultQueryFind): string {
+    if (!dataInstance.orderBy) {
+      return url;
+    }
+    Object.keys(dataInstance.orderBy).forEach((item, index) => {
+      const value = (dataInstance.orderBy as any)[item];
+      url = `${url}&sort[${index}][field]=${item}&sort[${index}][direction]=${value}`;
+    })
+    return url;
+  }
+}
+
+class WhereUrlValidator implements UrlValidator {
+  validate(url: string, dataInstance: DefaultQueryFind): string {
+    if (!dataInstance.where || !Object.keys(dataInstance.where).length) {
+      return url;
+    }
+    url = `${url}&filterByFormula=`;
+    const where = dataInstance.where;
+    const isArray = Array.isArray(where);
+    if (isArray) {
+      return url;
+    }
+    const whereArrat = Object.keys(where).map(item => {
+      const value = where[item];
+      return `{${item}}='${value}'`;
+    })
+    url = `${url}AND(${whereArrat.join(',')})`;
+    return url;
+  }
+}
+
+const makeUrlValidators = () => {
+  const selectValidator = new SelectUrlValidator();
+  const whereValidator = new WhereUrlValidator();
+  const oderByValidator = new OrderByUrlValidator();
+  return [selectValidator, whereValidator, oderByValidator];
 }
 
 class UrlGenerator implements GetUrlGenerator {
@@ -10,53 +63,22 @@ class UrlGenerator implements GetUrlGenerator {
   constructor(
     private readonly config: ConfigModel,
     private readonly table: TableModel,
-    private readonly dataInstance: QueryFind & QueryFindAll)
+    private readonly dataInstance: DefaultQueryFind,
+    private readonly validators: UrlValidator[] = makeUrlValidators()
+  )
   {
     this.url = `${config.baseUrl}/${table.tableName}?api_key=${config.apiKey}`;
   }
 
   getUrl(): string {
-    this.checkSelect();
-    this.checkWhere();
-    this.checkOrderBy();
+    this.validators.forEach(validator => {
+      this.url = validator.validate(this.url, this.dataInstance);
+    })
     return this.url;
-  }
-
-  checkSelect() {
-    this.dataInstance.select?.forEach(item => {
-      this.url = `${this.url}&fields[]=${item}`;
-    })
-  }
-
-  checkOrderBy() {
-    if (!this.dataInstance.orderBy) {
-      return;
-    }
-    Object.keys(this.dataInstance.orderBy).forEach((item, index) => {
-      const value = (this.dataInstance.orderBy as any)[item];
-      this.url = `${this.url}&sort[${index}][field]=${item}&sort[${index}][direction]=${value}`;
-    })
-  }
-
-  checkWhere() {
-    if (!this.dataInstance.where || !Object.keys(this.dataInstance.where).length) {
-      return;
-    }
-    this.url = `${this.url}&filterByFormula=`;
-    const where = this.dataInstance.where;
-    const isArray = Array.isArray(where);
-    if (isArray) {
-      return;
-    }
-    const whereArrat = Object.keys(where).map(item => {
-      const value = where[item];
-      return `{${item}}='${value}'`;
-    })
-    this.url = `${this.url}AND(${whereArrat.join(',')})`;
   }
 }
 
-const makeSut = (dataInstance: QueryFind & QueryFindAll) => {
+const makeSut = (dataInstance: DefaultQueryFind) => {
   const config: ConfigModel = { baseUrl: 'https://api.airtable.com/v0/any', apiKey: 'any_key' };
   const table: TableModel = {
     tableName: 'MyTable', columns: [
