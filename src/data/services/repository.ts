@@ -8,11 +8,11 @@ export class Repository implements RepositoryModel {
     private readonly httpClient: HttpClient
   ) {}
 
-  async find<T>(params: QueryFind): Promise<T> {
+  async find<T>(params: QueryFind): Promise<T | null> {
     const url = this.urlGenerator.getUrl({ ...params, take: 1 });
     const rawData = await this.httpClient.get(url);
     const data = this.convertRawData(rawData);
-    return (data && data.length ? data[0] : []) as T;
+    return data && data.length ? (data[0] as T) : null;
   }
 
   async findAll<T>(params: QueryFindAll): Promise<T[]> {
