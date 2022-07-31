@@ -1,4 +1,9 @@
-import { QueryFind, QueryFindAll, RepositoryModel } from '@/domain/contracts';
+import {
+  DataResult,
+  QueryFind,
+  QueryFindAll,
+  RepositoryModel,
+} from '@/domain/contracts';
 import { GetUrlGenerator } from '../../domain/features/get-url-generator';
 import { HttpClient } from '../protocols/http/http-client';
 
@@ -8,18 +13,21 @@ export class Repository implements RepositoryModel {
     private readonly httpClient: HttpClient
   ) {}
 
-  async find<T>(params: QueryFind): Promise<T | null> {
+  async find<E extends QueryFind<any>>(
+    params: E
+  ): Promise<DataResult<any, E['select']>> {
     const url = this.urlGenerator.getUrl({ ...params, take: 1 });
     const rawData = await this.httpClient.get(url);
     const data = this.convertRawData(rawData);
-    return data && data.length ? (data[0] as T) : null;
+    return data && data.length ? data[0] : null;
   }
 
-  async findAll<T>(params: QueryFindAll): Promise<T[]> {
+  async findAll<E extends QueryFindAll<any>>(
+    params: E
+  ): Promise<DataResult<any, E['select']>[]> {
     const url = this.urlGenerator.getUrl(params);
     const rawData = await this.httpClient.get(url);
-    const data = this.convertRawData(rawData);
-    return data as T[];
+    return this.convertRawData(rawData);
   }
 
   private convertRawData(rawData) {
@@ -39,7 +47,8 @@ export class Repository implements RepositoryModel {
   private filterFields(fields) {
     let result = {};
     Object.keys(fields).forEach((key) => {
-      const value: object = JSON.parse(`{"${key}":"${fields[key]}"}`);
+      const value = {};
+      value[key] = fields[key];
       result = { ...result, ...value };
     });
     return result;
