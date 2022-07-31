@@ -26,6 +26,9 @@ export class WhereUrlValidator implements UrlValidator {
   private generateAND(where: Where<string>): string {
     const whereArray = Object.keys(where).map((item) => {
       const value = where[item];
+      if (typeof value === 'boolean') {
+        return item;
+      }
       return `{${item}}='${value}'`;
     });
     return `AND(${whereArray.join(',')})`;

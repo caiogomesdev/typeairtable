@@ -63,4 +63,14 @@ describe('UrlGenerator', () => {
       })
     ).toBe(url);
   });
+
+  it('Should return url correct if where exists boolean with value equal true', () => {
+    const { sut, initialUrl } = makeSut();
+    const url = `${initialUrl}&filterByFormula=AND(isActived)`;
+    expect(
+      sut.getUrl({
+        where: { isActived: true },
+      })
+    ).toBe(url);
+  });
 });
