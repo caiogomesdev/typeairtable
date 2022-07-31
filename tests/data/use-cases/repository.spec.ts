@@ -6,6 +6,6 @@ describe('Repository', () => {
     const httpClientSpy = jest.spyOn(httpClientMock, 'get');
     await sut.find({});
     expect(httpClientSpy).toHaveBeenCalledTimes(1);
-    expect(httpClientSpy).toHaveBeenCalledWith(url);
+    expect(httpClientSpy).toHaveBeenCalledWith(`${url}&maxRecords=1`);
   });
 });
