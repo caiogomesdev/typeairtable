@@ -9,13 +9,12 @@ export const makeSutRepository = () => {
   const name = 'any_name';
   const urlGenerator = new UrlGenerator(
     { baseUrl, apiKey },
-    { tableName: 'any_name', columns: [{ name: { type: Field.SINGLE_TEXT } }] },
-    {}
+    { tableName: 'any_name', columns: [{ name: { type: Field.SINGLE_TEXT } }] }
   );
   const httpClientMock: jest.Mocked<HttpClient> = {
     get: jest.fn(<T = any>(_url: string) => Promise.resolve({} as T)),
   };
   const sut = new Repository(urlGenerator, httpClientMock);
   const url = `${baseUrl}/${name}?api_key=${apiKey}`;
-  return { sut, httpClientMock, url };
+  return { sut, httpClientMock, url, urlGenerator };
 };

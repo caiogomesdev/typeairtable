@@ -4,8 +4,8 @@ import { Field } from '@/domain/contracts';
 import { makeSutRepository } from '../mocks';
 
 const makeSut = () => {
-  const repository = makeSutRepository().sut;
-  const sut = new DataInstance(repository);
+  const { urlGenerator, httpClientMock } = makeSutRepository();
+  const sut = new DataInstance(urlGenerator, httpClientMock);
   return { sut };
 };
 

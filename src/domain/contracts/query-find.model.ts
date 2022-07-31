@@ -10,12 +10,10 @@ export type Where<T extends string> =
 
 export interface QueryFind<T extends string = any> extends BaseQueryFind<T> {}
 
-export interface QueryFindAll<T extends string> extends BaseQueryFind<T> {
+export interface QueryFindAll<T extends string = any> extends BaseQueryFind<T> {
   take?: number;
 }
 
-export interface DefaultQueryFind
-  extends Partial<BaseQueryFind>,
-    Partial<BaseQueryFind> {
-  take?: any;
+export interface DefaultQueryFind extends Partial<QueryFind> {
+  take?: number;
 }

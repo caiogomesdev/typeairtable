@@ -1,5 +1,10 @@
-import { QueryFind } from './query-find.model';
+import { QueryFind, QueryFindAll } from './query-find.model';
+
+type data<T extends string[]> = Record<T[number] | 'id' | 'createdTime', any>;
 
 export interface RepositoryModel<T extends string = any> {
-  find(params: QueryFind<T>): Promise<T>;
+  find<E extends QueryFind<T>>(params: E): Promise<data<E['select'] & string>>;
+  findAll<E extends QueryFindAll<T>>(
+    params: E
+  ): Promise<data<E['select'] & string>[]>;
 }
