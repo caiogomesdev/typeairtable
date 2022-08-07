@@ -8,4 +8,14 @@ describe('Repository', () => {
     expect(httpClientSpy).toHaveBeenCalledTimes(1);
     expect(httpClientSpy).toHaveBeenCalledWith(`${url}&maxRecords=1`);
   });
+  it('Should calls correct body on create', () => {
+    const { sut, httpClientMock, url } = makeSutRepository();
+    const httpClientSpy = jest.spyOn(httpClientMock, 'post');
+    const body = {
+      name: 'any_name',
+    };
+    sut.create(body);
+    expect(httpClientSpy).toHaveBeenCalledTimes(1);
+    expect(httpClientSpy).toHaveBeenCalledWith(url, { fields: body });
+  });
 });
