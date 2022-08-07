@@ -13,7 +13,7 @@ export class HttpAxiosClient implements HttpClient {
 
   async delete(url: string, id: string): Promise<boolean> {
     try {
-      const result = await axios.delete(`${url}&records[]=${id}`);
+      await axios.delete(`${url}&records[]=${id}`);
       return true;
     } catch {
       return false;

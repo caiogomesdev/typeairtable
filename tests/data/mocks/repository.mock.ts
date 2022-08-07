@@ -15,9 +15,7 @@ export const makeSutRepository = () => {
     post: jest.fn(<T = any, B = any>(_url: string, _body: B) =>
       Promise.resolve({} as T)
     ),
-    delete: jest.fn(<T = any, B = any>(_url: string, id: string) =>
-      Promise.resolve({} as T)
-    ),
+    delete: jest.fn((_url: string, _id: string) => Promise.resolve(true)),
   };
   const sut = new Repository(urlGenerator, httpClientMock);
   const url = `${baseUrl}/${name}?api_key=${apiKey}`;
