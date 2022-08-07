@@ -14,10 +14,7 @@ describe('DataInstance', () => {
     const { sut } = makeSut();
     const result = sut.getRepository({
       tableName: 'Produtos',
-      columns: [
-        { id: { type: Field.SINGLE_TEXT } },
-        { nameUser: { type: Field.SINGLE_TEXT } },
-      ],
+      columns: { id: 'singleText', nameUser: 'singleText' },
     });
 
     expect(result instanceof Repository).toBe(true);

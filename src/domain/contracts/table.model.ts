@@ -1,18 +1,24 @@
 export interface TableModel {
   tableName: string;
-  columns: ColumnsModel[];
+  columns: ColumnsModel;
 }
 
-export type ColumnsModel = {
-  [P in keyof object]: {
-    type: Field;
-  };
-};
+export type ColumnsModel = Record<string, Field>;
 
-export enum Field {
-  IMAGE = 'Image',
-  SINGLE_TEXT = 'SingleText',
-  LONG_TEXT = 'LongText',
-  NUMBER = 'Number',
-  DATE = 'Date',
-}
+export type Field =
+  | 'file'
+  | 'singleText'
+  | 'longText'
+  | 'number'
+  | 'checkBox'
+  | 'attachment';
+
+export type ConvertFieldType<T extends Field> = T extends 'number'
+  ? number
+  : T extends 'singleText' | 'longText'
+  ? string
+  : T extends 'file'
+  ? any[]
+  : T extends 'checkBox'
+  ? boolean
+  : any;

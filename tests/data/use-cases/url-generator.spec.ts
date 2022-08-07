@@ -8,11 +8,11 @@ const makeSut = () => {
   };
   const table: TableModel = {
     tableName: 'MyTable',
-    columns: [
-      { name: 'name', type: Field.SINGLE_TEXT },
-      { name: 'email', type: Field.SINGLE_TEXT },
-      { name: 'password', type: Field.SINGLE_TEXT },
-    ],
+    columns: {
+      name: 'singleText',
+      email: 'singleText',
+      password: 'singleText',
+    },
   };
   const sut = new UrlGenerator(config, table);
   const initialUrl = `${config.baseUrl}/${table.tableName}?api_key=${config.apiKey}`;
@@ -70,6 +70,16 @@ describe('UrlGenerator', () => {
     expect(
       sut.getUrl({
         where: { isActived: true },
+      })
+    ).toBe(url);
+  });
+
+  it('Should return url correct if where exists boolean with value equal false', () => {
+    const { sut, initialUrl } = makeSut();
+    const url = `${initialUrl}&filterByFormula=AND(NOT(isActived))`;
+    expect(
+      sut.getUrl({
+        where: { isActived: false },
       })
     ).toBe(url);
   });
