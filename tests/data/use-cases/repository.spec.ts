@@ -18,4 +18,12 @@ describe('Repository', () => {
     expect(httpClientSpy).toHaveBeenCalledTimes(1);
     expect(httpClientSpy).toHaveBeenCalledWith(url, { fields: body });
   });
+  it('Should calls correct body on destroy', () => {
+    const { sut, httpClientMock, url } = makeSutRepository();
+    const httpClientSpy = jest.spyOn(httpClientMock, 'delete');
+    const id = 'any_id';
+    sut.destroy(id);
+    expect(httpClientSpy).toHaveBeenCalledTimes(1);
+    expect(httpClientSpy).toHaveBeenCalledWith(url, id);
+  });
 });
