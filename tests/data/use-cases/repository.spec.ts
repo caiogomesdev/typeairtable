@@ -26,4 +26,31 @@ describe('Repository', () => {
     expect(httpClientSpy).toHaveBeenCalledTimes(1);
     expect(httpClientSpy).toHaveBeenCalledWith(url, id);
   });
+  it('Should calls correct body on update', () => {
+    const { sut, httpClientMock, url } = makeSutRepository();
+    const httpClientSpy = jest.spyOn(httpClientMock, 'patch');
+    const id = 'any_id';
+    const body = {
+      name: 'any_name_2',
+    };
+    httpClientSpy.mockResolvedValue({
+      records: [
+        {
+          id,
+          createdTime: '2022-07-29T12:18:09.000Z',
+          fields: body,
+        },
+      ],
+    });
+    sut.update(id, body);
+    expect(httpClientSpy).toHaveBeenCalledTimes(1);
+    expect(httpClientSpy).toHaveBeenCalledWith(url, {
+      records: [
+        {
+          id,
+          fields: body,
+        },
+      ],
+    });
+  });
 });
