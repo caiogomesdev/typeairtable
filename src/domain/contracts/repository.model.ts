@@ -31,4 +31,9 @@ export interface RepositoryModel<T extends ColumnsModel = any> {
   ): Promise<ConvertFieldTypeValue<T> & DefaultData>;
 
   destroy(id: string): Promise<boolean>;
+
+  update(
+    id: string,
+    body: ConvertFieldTypeValue<T>
+  ): Promise<ConvertFieldTypeValue<T> & DefaultData>;
 }

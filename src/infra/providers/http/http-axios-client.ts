@@ -19,4 +19,8 @@ export class HttpAxiosClient implements HttpClient {
       return false;
     }
   }
+  async patch<T = any, B = any>(url: string, body: B): Promise<T> {
+    const result = await axios.patch(url, body);
+    return result.data;
+  }
 }

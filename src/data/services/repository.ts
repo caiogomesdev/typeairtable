@@ -44,8 +44,27 @@ export class Repository implements RepositoryModel {
     };
   }
 
-  async destroy(id: string): Promise<boolean> {
+  destroy(id: string): Promise<boolean> {
     return this.httpClient.delete(this.urlGenerator.getUrl({}), id);
+  }
+
+  async update(
+    id: string,
+    body: ConvertFieldTypeValue<any>
+  ): Promise<ConvertFieldTypeValue<any> & DefaultData> {
+    const result = await this.httpClient.patch(this.urlGenerator.getUrl({}), {
+      records: [
+        {
+          id,
+          fields: body,
+        },
+      ],
+    });
+    return {
+      ...result.records[0].fields,
+      id: result.records[0].id,
+      createdTime: result.records[0].createdTime,
+    };
   }
 
   private convertRawData(rawData) {
