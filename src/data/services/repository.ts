@@ -1,5 +1,7 @@
 import {
+  ConvertFieldTypeValue,
   DataResult,
+  DefaultData,
   QueryFind,
   QueryFindAll,
   RepositoryModel,
@@ -12,7 +14,6 @@ export class Repository implements RepositoryModel {
     private readonly urlGenerator: GetUrlGenerator,
     private readonly httpClient: HttpClient
   ) {}
-
   async find<E extends QueryFind<any>>(
     params: E
   ): Promise<DataResult<any, E['select']>> {
@@ -28,6 +29,19 @@ export class Repository implements RepositoryModel {
     const url = this.urlGenerator.getUrl(params);
     const rawData = await this.httpClient.get(url);
     return this.convertRawData(rawData);
+  }
+
+  async create(
+    body: ConvertFieldTypeValue<any>
+  ): Promise<ConvertFieldTypeValue<any> & DefaultData> {
+    const result = await this.httpClient.post(this.urlGenerator.getUrl({}), {
+      fields: body,
+    });
+    return {
+      ...result.fields,
+      id: result.id,
+      createdTime: result.createdTime,
+    };
   }
 
   private convertRawData(rawData) {

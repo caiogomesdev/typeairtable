@@ -1,3 +1,4 @@
 export interface HttpClient {
   get<T = any>(url: string): Promise<T>;
+  post<T = any, B = any>(url: string, body: B): Promise<T>;
 }

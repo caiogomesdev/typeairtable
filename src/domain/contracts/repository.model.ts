@@ -1,11 +1,15 @@
 import { QueryFind, QueryFindAll } from './query-find.model';
-import { ColumnsModel, ConvertFieldType } from './table.model';
+import {
+  ColumnsModel,
+  ConvertFieldType,
+  ConvertFieldTypeValue,
+} from './table.model';
 
 type Data<T extends ColumnsModel, F extends any[] | unknown> = {
   [key in F extends any[] ? F[number] : keyof T]: ConvertFieldType<T[key]>;
 } & DefaultData;
 
-type DefaultData = {
+export type DefaultData = {
   id: string;
   createdTime: string;
 };
@@ -21,4 +25,8 @@ export interface RepositoryModel<T extends ColumnsModel = any> {
   findAll<E extends QueryFindAll<T>>(
     params: E
   ): Promise<DataResult<T, E['select']>[]>;
+
+  create(
+    body: ConvertFieldTypeValue<T>
+  ): Promise<ConvertFieldTypeValue<T> & DefaultData>;
 }

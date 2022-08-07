@@ -22,3 +22,7 @@ export type ConvertFieldType<T extends Field> = T extends 'number'
   : T extends 'checkBox'
   ? boolean
   : any;
+
+export type ConvertFieldTypeValue<T extends ColumnsModel> = {
+  [key in keyof T]: ConvertFieldType<T[key]>;
+};

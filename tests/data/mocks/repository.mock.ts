@@ -12,6 +12,9 @@ export const makeSutRepository = () => {
   );
   const httpClientMock: jest.Mocked<HttpClient> = {
     get: jest.fn(<T = any>(_url: string) => Promise.resolve({} as T)),
+    post: jest.fn(<T = any, B = any>(_url: string, _body: B) =>
+      Promise.resolve({} as T)
+    ),
   };
   const sut = new Repository(urlGenerator, httpClientMock);
   const url = `${baseUrl}/${name}?api_key=${apiKey}`;
