@@ -44,6 +44,10 @@ export class Repository implements RepositoryModel {
     };
   }
 
+  async destroy(id: string): Promise<boolean> {
+    return this.httpClient.delete(this.urlGenerator.getUrl({}), id);
+  }
+
   private convertRawData(rawData) {
     return rawData?.records?.map((item) => ({
       ...this.filterIdAndCreatedTime(item),
