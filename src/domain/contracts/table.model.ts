@@ -20,7 +20,7 @@ export type ConvertFieldType<T extends Field> = T extends 'number'
   : T extends 'file'
   ? any[]
   : T extends 'checkBox'
-  ? boolean
+  ? boolean | undefined
   : any;
 
 export type ConvertFieldTypeValue<T extends ColumnsModel> = {
